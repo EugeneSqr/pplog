@@ -1,9 +1,17 @@
 import re
 
+import jq
+
 def get(log_entry):
     if not log_entry:
         return []
     return map(_parse, re.finditer('({.*?})', log_entry))
+
+def transform(data, query):
+    try:
+        return next(iter(jq.compile(query).input(data).all()), None)
+    except ValueError:
+        return data
 
 def _parse(block_match):
     block_string = block_match.group(0)

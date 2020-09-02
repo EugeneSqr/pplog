@@ -10,8 +10,13 @@ def test_get_python_object_blocks():
     expected_raw = ["{'a':1}", "{a}", "{}"]
     expected_parsed = [{'a': 1}, None, {}]
     for i, block in enumerate(pprint_blocks.get("test {'a':1} {a} log {} entry")):
-        _assert_block(block, expected_raw[i], expected_parsed[i])
+        assert block.raw == expected_raw[i]
+        assert block.parsed == expected_parsed[i]
 
-def _assert_block(actual, raw, parsed):
-    assert actual.raw == raw
-    assert actual.parsed == parsed
+def test_transform_invalid_query_returns_data_itself():
+    data = {'a': 1}
+    assert pprint_blocks.transform(data, 'x') == data
+
+@pytest.mark.parametrize('empty_data', ['', None, {}])
+def test_transform_empty_data_returns_none(empty_data):
+    assert pprint_blocks.transform(empty_data, '.') == empty_data
