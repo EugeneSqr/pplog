@@ -5,7 +5,7 @@ import jq
 def get(log_entry):
     if not log_entry:
         return []
-    return map(_parse, re.finditer('({.*?})', log_entry))
+    return filter(lambda x: x.parsed, map(_parse, re.finditer('({.*?})', log_entry)))
 
 def transform(data, query):
     try:
