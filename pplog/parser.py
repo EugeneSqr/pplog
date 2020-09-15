@@ -1,18 +1,10 @@
 import re
 import json
 
-import jq
-
-def get(log_entry):
+def parse_log_entry(log_entry):
     if not log_entry:
         return []
     return filter(lambda x: x.parsed, map(_parse, re.finditer('({.*?})', log_entry)))
-
-def transform(data, query):
-    try:
-        return next(iter(jq.compile(query).input(data).all()), None)
-    except ValueError:
-        return data
 
 def _parse(match):
     matched_string = _get_matched_string(match)
