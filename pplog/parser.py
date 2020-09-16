@@ -1,20 +1,30 @@
-import re
 import json
 
 def parse_log_entry(log_entry):
     if not log_entry:
         return []
-    return filter(lambda x: x.parsed, map(_parse, re.finditer('({.*?})', log_entry)))
+    return filter(lambda x: x.parsed, _parse(log_entry))
 
-def _parse(match):
-    matched_string = _get_matched_string(match)
-    return type('', (), {
-        'raw': matched_string,
-        'parsed': _parse_json(matched_string) or _parse_python_dict(matched_string),
-    })
-
-def _get_matched_string(match):
-    return match.group(0)
+def _parse(log_entry):
+    balance = 0
+    blocks = []
+    current_block = ''
+    for char in log_entry:
+        if char == '{':
+            current_block += char
+            balance += 1
+        elif char == '}':
+            current_block += char
+            balance -= 1
+            if balance == 0:
+                blocks.append(type('block', (), {
+                    'raw': current_block,
+                    'parsed': _parse_json(current_block) or _parse_python_dict(current_block),
+                }))
+                current_block = ''
+        elif balance > 0:
+            current_block += char
+    return blocks
 
 def _parse_json(matched_string):
     try:
