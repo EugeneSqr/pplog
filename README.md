@@ -1,7 +1,7 @@
 ## Installation
 Clone the repository, create virtual environment, install dependencies
 ```
-git clone git@github.com:EugeneSqr/pplog.git && cd pplog
+git clone https://github.com/EugeneSqr/pplog.git && cd pplog
 python3.6 -m venv env
 . env/bin/activate
 pip install -r requirements.txt
