@@ -23,7 +23,8 @@ def main():
 
 def query_safely(obj, query):
     try:
-        return query.input(obj).all()
+        result_items = query.input(obj).all()
+        return result_items[0] if len(result_items) == 1 else result_items
     except ValueError:
         return obj
 
